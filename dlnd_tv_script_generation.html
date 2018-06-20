@@ -12599,10 +12599,12 @@ Default GPU Device: /device:GPU:0
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[23]:</div>
+<div class="prompt input_prompt">In&nbsp;[59]:</div>
 <div class="inner_cell">
     <div class="input_area">
-<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># Number of Epochs</span>
+<div class=" highlight hl-ipython3"><pre><span></span><span class="c1"># NOTE TO REVIEWER: In fact the batch_size is low but i want to be able to train it on my laptop and therefore local GPU. </span>
+<span class="c1"># Increasing batch_size and seq_length will locally in result in OOM error. However the train_loss is quite good so i decided to go with it.</span>
+<span class="c1"># Number of Epochs</span>
 <span class="n">num_epochs</span> <span class="o">=</span><span class="mi">250</span>
 <span class="c1"># Batch Size</span>
 <span class="n">batch_size</span> <span class="o">=</span> <span class="mi">128</span>
@@ -13584,7 +13586,7 @@ Model Trained and Saved
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[27]:</div>
+<div class="prompt input_prompt">In&nbsp;[1]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
@@ -13600,6 +13602,25 @@ Model Trained and Saved
 </pre></div>
 
 </div>
+</div>
+</div>
+
+<div class="output_wrapper">
+<div class="output">
+
+
+<div class="output_area">
+
+<div class="prompt"></div>
+
+
+<div class="output_subarea output_stream output_stderr output_text">
+<pre>C:\Users\chris\Anaconda3\envs\sam\lib\site-packages\h5py\__init__.py:36: FutureWarning: Conversion of the second argument of issubdtype from `float` to `np.floating` is deprecated. In future, it will be treated as `np.float64 == np.dtype(float).type`.
+  from ._conv import register_converters as _register_converters
+</pre>
+</div>
+</div>
+
 </div>
 </div>
 
@@ -13622,7 +13643,7 @@ Model Trained and Saved
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[30]:</div>
+<div class="prompt input_prompt">In&nbsp;[2]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">get_tensors</span><span class="p">(</span><span class="n">loaded_graph</span><span class="p">):</span>
@@ -13680,7 +13701,7 @@ Model Trained and Saved
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[31]:</div>
+<div class="prompt input_prompt">In&nbsp;[57]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">pick_word</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">int_to_vocab</span><span class="p">):</span>
@@ -13691,8 +13712,9 @@ Model Trained and Saved
 <span class="sd">    :return: String of the predicted word</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># TODO: Implement Function</span>
-    <span class="n">pidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">probabilities</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">int_to_vocab</span><span class="p">[</span><span class="n">pidx</span><span class="p">]</span>
+    <span class="c1"># NOTE TO REVIEWER: Below is changed line for using a more random word selection.</span>
+    <span class="n">pidx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">probabilities</span><span class="p">),</span> <span class="mi">1</span><span class="p">,</span><span class="n">p</span><span class="o">=</span><span class="n">probabilities</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">int_to_vocab</span><span class="p">[</span><span class="n">pidx</span><span class="p">[</span><span class="mi">0</span><span class="p">]]</span>
 
 
 <span class="sd">&quot;&quot;&quot;</span>
@@ -13735,7 +13757,7 @@ Model Trained and Saved
 </div>
 <div class="cell border-box-sizing code_cell rendered">
 <div class="input">
-<div class="prompt input_prompt">In&nbsp;[32]:</div>
+<div class="prompt input_prompt">In&nbsp;[58]:</div>
 <div class="inner_cell">
     <div class="input_area">
 <div class=" highlight hl-ipython3"><pre><span></span><span class="n">gen_length</span> <span class="o">=</span> <span class="mi">200</span>
@@ -13799,21 +13821,23 @@ Model Trained and Saved
 
 <div class="output_subarea output_stream output_stdout output_text">
 <pre>INFO:tensorflow:Restoring parameters from ./save
-moe_szyslak:(furious) you callin&#39; my girl a liar?!
-moe_szyslak:(defeated) okay.
-moe_szyslak:(sad) i&#39;ve been stood up.
-maya: moe, i&#39;m down here.
-moe_szyslak:(surprised) oh, you&#39;re a little person?(regretful moe) oh, no! yeah!
-moe_szyslak:(amid curious sounds) hey.
-moe_szyslak:(into phone) gotcha everybody!(handing homer a beer) it&#39;s soakin&#39;s.
-professor_jonathan_frink: that is just gonna get your face?
-moe_szyslak:(sigh) well, that&#39;s a good drink... the only problem is the....(he little private phone)
-homer_simpson:(see, is) you gotta go home for a guy like this before.
-homer_simpson: now when you just let me the new barney?
-moe_szyslak: whoa, whoa, now, uh, when you!
-seymour_skinner: now, that&#39;s a shame.
-carl_carlson:(nods) yeah... who the last problem?
-rev. _timothy_lovejoy: well, do you say aerosmith if
+moe_szyslak:(amazed) that thing knows me better than i know myself.
+
+
+duffman: hey, duff lovers! does anyone in this bar love duff?
+carl_carlson: hey, it&#39;s duffman!
+lenny_leonard: newsweek said you died of liver failure.
+duffman: duffman is one business for song.
+bart_simpson: that&#39;s right. no matter how much you can most walking sensitivity look at glen and to tell you again.
+bart_simpson: just starters me a rough christmas, lenny.
+lenny_leonard:(huge sobs) it&#39;s--
+carl_carlson: okay. but if you said about about you.
+aristotle:(thinks) effervescent!(holds up the sitcom and the cars know for the truth.
+duffman:(exasperated noise) what the hell but i drink something?
+barney_gumble: wow, but right?
+homer_simpson:(matter-of-fact) i thought you said you have a guy who hated this contractors.
+lenny_leonard: i look at you can do have this dump since she hated the blue man of the matter, like everyone&#39;s form
+moe_szyslak: uh, lemme don&#39;t let
 </pre>
 </div>
 </div>
